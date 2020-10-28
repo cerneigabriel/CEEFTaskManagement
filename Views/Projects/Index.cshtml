@@ -1,0 +1,65 @@
+﻿@model IEnumerable<TaskManagement.Models.Project>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.name)</th>
+        <th>@Html.DisplayNameFor(model => model.description)</th>
+        <th>@Html.DisplayNameFor(model => model.Tasks)</th>
+        <th>@Html.DisplayNameFor(model => model.created_at)</th>
+        <th>@Html.DisplayNameFor(model => model.updated_at)</th>
+        <th></th>
+    </tr>
+
+    @foreach (var project in Model)
+    {
+        <tr>
+            <td>@project.name</td>
+            <td>@project.description</td>
+            <td>@Enumerable.Count(project.Tasks)</td>
+            <td>@project.created_at</td>
+            <td>@project.updated_at</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = project.ProjectID }) |
+                @Html.ActionLink("Details", "Details", new { id = project.ProjectID }) |
+                
+                <a href="#" type="button" class="btn btn-link" data-toggle="modal" data-target="#delete_@project.ProjectID">
+                    Delete
+                </a>
+
+                <!-- Modal -->
+                <div class="modal fade" id="delete_@project.ProjectID" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Are you sure?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            @using (Html.BeginForm("Delete", "Projects", new { id = project.ProjectID }, FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Back to List</button>
+                                    <input type="submit" value="Delete" class="btn btn-danger" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    }
+
+</table>

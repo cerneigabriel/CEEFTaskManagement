@@ -1,0 +1,96 @@
+﻿@model TaskManagement.Models.Project
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Project</h4>
+    <hr />
+    <table class="table">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.name)</th>
+            <td>@Model.name</td>
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.description)</th>
+            <td>@Model.description</td>
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.created_at)</th>
+            <td>@Model.created_at</td>
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.updated_at)</th>
+            <td>@Model.updated_at</td>
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Tasks)</th>
+            <td>
+                <ul type="none" style="padding: 0">
+                    <li>
+                        Total: @Model.Tasks.Count()<span> tasks | </span>
+                        @foreach (var task in Model.Tasks.ToList().GroupBy(m => m.TaskStatusID))
+                        {
+                            @Model.Tasks.Where(m => m.TaskStatusID == task.Key).First().TaskStatus.name<span>: </span>
+                            @Model.Tasks.Where(m => m.TaskStatusID == task.Key).ToList().Count();<span> tasks | </span>
+
+                        }
+                    </li>
+                    <li><hr></li>
+                    <li></li>
+                    @foreach (var task in Model.Tasks)
+                    {
+                        <li>
+                            <h5>
+                                @task.name |
+                                <span style="color: #5256d2; font-weight: 800; font-size: 1.2rem;">@task.TaskStatus.name</span><span> | </span>
+                                <span>@task.Priority.name</span><span> | </span>
+                                <span title="Estimated Time">ET: @task.estimated_time</span><span> | </span>
+                                <span title="Tracked Time">TT: @task.tracked_time</span><span> | </span>
+                                @Html.ActionLink("Edit", "Edit", "Tasks", new { id = task.TaskID })<span> | </span>
+                                @Html.ActionLink("Details", "Details", "Tasks", new { id = task.TaskID })<span> | </span>
+                                <a href="#" type="button" class="btn btn-link" data-toggle="modal" data-target="#delete_@task.TaskID">
+                                    Delete
+                                </a>
+                            </h5>
+                            <p>@task.description</p>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="delete_@task.TaskID" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="staticBackdropLabel">Are you sure?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        @using (Html.BeginForm("Delete", "Tasks", new { id = task.TaskID }, FormMethod.Post))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Back to List</button>
+                                                <input type="submit" value="Delete" class="btn btn-danger" />
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr></li>
+                    }
+                    @Html.ActionLink("Create New", "Create", "Tasks")
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ProjectID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

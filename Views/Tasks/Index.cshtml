@@ -1,0 +1,77 @@
+﻿@model IEnumerable<TaskManagement.Models.Task>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.Priority.name)</th>
+        <th>@Html.DisplayNameFor(model => model.Project.name)</th>
+        <th>@Html.DisplayNameFor(model => model.TaskStatus.name)</th>
+        <th>@Html.DisplayNameFor(model => model.name)</th>
+        <th>@Html.DisplayNameFor(model => model.description)</th>
+        <th>@Html.DisplayNameFor(model => model.start_date)</th>
+        <th>@Html.DisplayNameFor(model => model.due_date)</th>
+        <th>@Html.DisplayNameFor(model => model.estimated_time)</th>
+        <th>@Html.DisplayNameFor(model => model.tracked_time)</th>
+        <th>@Html.DisplayNameFor(model => model.created_at)</th>
+        <th>@Html.DisplayNameFor(model => model.updated_at)</th>
+        <th></th>
+    </tr>
+
+@foreach (var task in Model) {
+    <tr>
+        <td>@Html.DisplayFor(modelItem => task.Priority.name)</td>
+        <td>
+            @Html.ActionLink(Html.DisplayFor(modelItem => task.Project.name).ToString(), "Details", "Projects", new { id = task.Project.ProjectID }, null)
+        </td>
+        <td>@Html.DisplayFor(modelItem => task.TaskStatus.name)</td>
+        <td>@Html.DisplayFor(modelItem => task.name)</td>
+        <td>@Html.DisplayFor(modelItem => task.description)</td>
+        <td>@Html.DisplayFor(modelItem => task.start_date)</td>
+        <td>@Html.DisplayFor(modelItem => task.due_date)</td>
+        <td>@Html.DisplayFor(modelItem => task.estimated_time)</td>
+        <td>@Html.DisplayFor(modelItem => task.tracked_time)</td>
+        <td>@Html.DisplayFor(modelItem => task.created_at)</td>
+        <td>@Html.DisplayFor(modelItem => task.updated_at)</td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = task.TaskID }) |
+            @Html.ActionLink("Details", "Details", new { id = task.TaskID }) |
+            <a href="#" type="button" class="btn btn-link" data-toggle="modal" data-target="#delete_@task.TaskID">
+                Delete
+            </a>
+
+            <!-- Modal -->
+            <div class="modal fade" id="delete_@task.TaskID" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Are you sure?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        @using (Html.BeginForm("Delete", "Tasks", new { id = task.TaskID }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Back to List</button>
+                                <input type="submit" value="Delete" class="btn btn-danger" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+}
+
+</table>
